@@ -1,4 +1,4 @@
-# AISSD Gen-1 sim-first smoke build (host C stubs; not FPGA).
+# AISSD Gen-1 sim-first build (host C prototype; not FPGA).
 CC      ?= gcc
 CFLAGS  ?= -std=c11 -Wall -Wextra -Werror -O2
 CPPFLAGS += -Iinclude
@@ -10,21 +10,37 @@ STUB_SRCS := \
 	src/stubs/qos_fdp.c \
 	src/stubs/nand_model.c
 
+PROTO_SRCS := \
+	src/proto/host_traffic.c \
+	src/proto/proto_ctrl.c
+
 STUB_OBJS := $(STUB_SRCS:.c=.o)
+PROTO_OBJS := $(PROTO_SRCS:.c=.o)
 
-.PHONY: all smoke clean
+.PHONY: all smoke proto clean
 
-all: smoke
+all: smoke proto
 
 build/smoke_io_desc: tests/smoke_io_desc.c $(STUB_OBJS)
+	@mkdir -p build
+	$(CC) $(CPPFLAGS) $(CFLAGS) -o $@ $^ $(LDFLAGS)
+
+build/proto_demo: tests/proto_demo.c $(STUB_OBJS) $(PROTO_OBJS)
 	@mkdir -p build
 	$(CC) $(CPPFLAGS) $(CFLAGS) -o $@ $^ $(LDFLAGS)
 
 src/stubs/%.o: src/stubs/%.c
 	$(CC) $(CPPFLAGS) $(CFLAGS) -c -o $@ $<
 
+src/proto/%.o: src/proto/%.c
+	@mkdir -p src/proto
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c -o $@ $<
+
 smoke: build/smoke_io_desc
 	./build/smoke_io_desc
 
+proto: build/proto_demo
+	./build/proto_demo
+
 clean:
-	rm -rf build $(STUB_OBJS)
+	rm -rf build $(STUB_OBJS) $(PROTO_OBJS)
