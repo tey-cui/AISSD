@@ -1,0 +1,23 @@
+# SPDX-License-Identifier: Apache-2.0
+# Best-effort Yosys elaboration/synth check for aissd_fpga_top.
+# Yosys 0.33 SV support is incomplete — scripts/run_fpga_lint.sh also runs Verilator.
+
+read_verilog -sv \
+  rtl/host_cmd_queue.sv \
+  rtl/qos_fdp_place.sv \
+  rtl/ftl_l2p.sv \
+  rtl/nand_timing_model.sv \
+  rtl/aissd_ctrl_top.sv \
+  rtl/fpga/sync_reset.sv \
+  rtl/fpga/axi_lite_mmio.sv \
+  rtl/fpga/simple_traffic_gen.sv \
+  rtl/fpga/aissd_fpga_top.sv \
+  rtl/fpga/aissd_fpga_board.sv
+
+hierarchy -check -top aissd_fpga_board
+proc
+opt_clean
+check
+stat
+# Generic FPGA techmap is optional; avoid claiming device bitstream.
+# synth_xilinx -top aissd_fpga_top   ## uncomment locally if desired

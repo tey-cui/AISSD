@@ -1,4 +1,4 @@
-# AISSD Gen-1 sim-first + hardware-sim build (not FPGA bitstream).
+# AISSD Gen-1: C twin + HW-sim + FPGA lint stubs (not a claimed bitstream).
 CC      ?= gcc
 CFLAGS  ?= -std=c11 -Wall -Wextra -Werror -O2
 CPPFLAGS += -Iinclude
@@ -17,7 +17,7 @@ PROTO_SRCS := \
 STUB_OBJS := $(STUB_SRCS:.c=.o)
 PROTO_OBJS := $(PROTO_SRCS:.c=.o)
 
-.PHONY: all smoke proto hw-sim sim-hw clean
+.PHONY: all smoke proto hw-sim sim-hw fpga-lint fpga-vivado clean
 
 all: smoke proto
 
@@ -46,6 +46,16 @@ proto: build/proto_demo
 hw-sim sim-hw:
 	@chmod +x scripts/run_hw_sim.sh
 	./scripts/run_hw_sim.sh
+
+# Synth-oriented lint (Verilator lint-only + optional Yosys). No bitstream.
+fpga-lint:
+	@chmod +x scripts/run_fpga_lint.sh
+	./scripts/run_fpga_lint.sh
+
+# Local Vivado batch stub — exits 2 if vivado missing (no false success).
+fpga-vivado:
+	@chmod +x scripts/run_fpga_vivado.sh
+	./scripts/run_fpga_vivado.sh
 
 clean:
 	rm -rf build $(STUB_OBJS) $(PROTO_OBJS)
