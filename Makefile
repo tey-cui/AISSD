@@ -1,4 +1,4 @@
-# AISSD Gen-1 sim-first build (host C prototype; not FPGA).
+# AISSD Gen-1 sim-first + hardware-sim build (not FPGA bitstream).
 CC      ?= gcc
 CFLAGS  ?= -std=c11 -Wall -Wextra -Werror -O2
 CPPFLAGS += -Iinclude
@@ -17,7 +17,7 @@ PROTO_SRCS := \
 STUB_OBJS := $(STUB_SRCS:.c=.o)
 PROTO_OBJS := $(PROTO_SRCS:.c=.o)
 
-.PHONY: all smoke proto clean
+.PHONY: all smoke proto hw-sim sim-hw clean
 
 all: smoke proto
 
@@ -41,6 +41,11 @@ smoke: build/smoke_io_desc
 
 proto: build/proto_demo
 	./build/proto_demo
+
+# Hardware simulation (Verilator preferred; Icarus fallback). See docs/hw-sim-prototype.md
+hw-sim sim-hw:
+	@chmod +x scripts/run_hw_sim.sh
+	./scripts/run_hw_sim.sh
 
 clean:
 	rm -rf build $(STUB_OBJS) $(PROTO_OBJS)

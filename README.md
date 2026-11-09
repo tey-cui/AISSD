@@ -1,40 +1,50 @@
 # AISSD
 
-AI 导向 SSD 控制器 **Gen-1 仿真原型**（仿真优先 / sim-first）。  
+AI 导向 SSD 控制器 **Gen-1 仿真原型**（行为仿真 + 硬件仿真）。  
 Clean-room adaptation for an AI-oriented SSD controller — **not** a fork of Cosmos+ OpenSSD.
 
 ## 中文摘要
 
-- **本仓**：自有 Apache-2.0 代码 — `io_desc`、多队列原型控制器、AI 形态流量生成、FDP RUH 放置、FTL L2P/GC 挂起、带统计的 `nand_model`。
-- **Cosmos+ OpenSSD**：外部 **GPL-3.0 学习基线**（钉扎提交见 `UPSTREAM_PIN.txt`）。默认 **不**把完整 GPL 树 vendor 进产品路径；克隆说明在 `third_party/cosmos-plus-openssd/`。
+- **本仓**：自有 Apache-2.0 代码 — C 行为孪生（`io_desc` / FDP / FTL / `nand_model`）+ **SystemVerilog 硬件仿真路径**（Verilator/Icarus）。
+- **Cosmos+ OpenSSD**：外部 **GPL-3.0 学习基线**（钉扎提交见 `UPSTREAM_PIN.txt`）。默认 **不**把完整 GPL 树 vendor 进产品路径。
 - **不做**：不声称 FPGA bitstream、不把 GPL RTL/固件当作专有代码、不把 LMCache/SGLang 当作控制器。
 
 ```bash
-make smoke   # 期望: smoke_io_desc: PASS
-make proto   # 期望: 短报告 + proto_demo: PASS
+make smoke    # C 冒烟: smoke_io_desc: PASS
+make proto    # C 原型演示 + 短报告
+make hw-sim   # 硬件仿真（亦可用 make sim-hw）→ hw_sim: PASS
 ```
+
+### 硬件仿真依赖
+
+```bash
+# Debian/Ubuntu
+sudo apt-get update && sudo apt-get install -y verilator iverilog
+
+# macOS
+brew install verilator icarus-verilog
+```
+
+详见 [`docs/hw-sim-prototype.md`](docs/hw-sim-prototype.md)。波形：`build/hw_sim/aissd_hw_sim.vcd`。
 
 | 路径 | 说明 |
 |------|------|
-| `include/` | 公共头文件契约 |
-| `src/stubs/` | FTL / QoS / NAND 仿真实现 |
-| `src/proto/` | 多队列控制器 + AI 流量生成 |
-| `tests/smoke_io_desc.c` | 写→读回冒烟 |
-| `tests/proto_demo.c` | 端到端原型演示 |
-| `docs/prototype-design.md` | **原型架构说明**（框图 / 范围 / 成功标准） |
-| `docs/INTEGRATION.md` | 集成计划 |
-| `docs/workload-notes.md` | LMCache / SGLang 负载参考 |
-| `third_party/cosmos-plus-openssd/` | 上游克隆与许可声明 |
+| `include/` · `src/stubs/` · `src/proto/` | C 行为孪生 |
+| `rtl/` | Clean-room SV：队列 / FDP / L2P / NAND 时序模型 / top |
+| `tb/tb_aissd_hw_sim.sv` | 自检 TB + VCD |
+| `scripts/run_hw_sim.sh` | Verilator→Icarus 启动脚本 |
+| `tests/` | C smoke / proto demo |
+| `docs/prototype-design.md` | C 原型架构 |
+| `docs/hw-sim-prototype.md` | **硬件仿真**架构与 runbook |
+| `third_party/cosmos-plus-openssd/` | 上游克隆说明（不 vendor 全树） |
 
 ## English brief
 
-AISSD hosts a **host-side C simulation path**: AI traffic → multi-queue → `io_desc` → FDP/QoS → FTL → `nand_model` (with IOPS/p99).  
-Cosmos+ is a **pinned external study baseline** under `third_party/` (GPL; no silent relicensing). See `docs/prototype-design.md`.
+AISSD provides a **behavioral C twin** (`make proto`) and a **hardware-sim path** (`make hw-sim`) over clean-room SystemVerilog: host SQ → FDP placement → L2P/GC hooks → cycle-approx NAND → completions, with a self-checking TB and VCD. Cosmos+ remains an external GPL study baseline only.
 
 ```text
-AI traffic gens → proto_ctrl (multi-SQ) → io_desc
-                      ↓
-              qos_fdp (RUH→region) → FTL (L2P/GC) → nand_model
+C:   AI traffic → proto_ctrl → io_desc → qos/FTL → nand_model
+HW:  Host BFM  → aissd_ctrl_top (SV) → timed NAND model → CQ + VCD
 ```
 
 License: Apache-2.0 for first-party code — see `LICENSE` and `NOTICE`.
