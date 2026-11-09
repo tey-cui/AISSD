@@ -55,9 +55,10 @@ make proto
 ```
 
 原型架构、范围与数据路径见 [`docs/prototype-design.md`](./prototype-design.md)。  
-硬件仿真（Verilator/Icarus）见 [`docs/hw-sim-prototype.md`](./hw-sim-prototype.md)：`make hw-sim`。
+硬件仿真（Verilator/Icarus）见 [`docs/hw-sim-prototype.md`](./hw-sim-prototype.md)：`make hw-sim`。  
+FPGA 外壳与可烧录评估见 [`docs/fpga-portability.md`](./fpga-portability.md)：`make fpga-lint`（无 Vivado 时不声称 bitstream）。
 
-不声称 Vivado 综合或真实 NVMe 枚举。
+不声称本环境已产出 Vivado bitstream 或真实 NVMe 枚举。
 
 ---
 

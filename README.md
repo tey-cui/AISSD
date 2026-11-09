@@ -1,50 +1,41 @@
 # AISSD
 
-AI 导向 SSD 控制器 **Gen-1 仿真原型**（行为仿真 + 硬件仿真）。  
-Clean-room adaptation for an AI-oriented SSD controller — **not** a fork of Cosmos+ OpenSSD.
+AI 导向 SSD 控制器 **Gen-1 仿真 / FPGA 外壳**（行为仿真 + 硬件仿真 + 可综合脚手架）。  
+Clean-room adaptation — **not** a fork of Cosmos+ OpenSSD.
 
 ## 中文摘要
 
-- **本仓**：自有 Apache-2.0 代码 — C 行为孪生（`io_desc` / FDP / FTL / `nand_model`）+ **SystemVerilog 硬件仿真路径**（Verilator/Icarus）。
-- **Cosmos+ OpenSSD**：外部 **GPL-3.0 学习基线**（钉扎提交见 `UPSTREAM_PIN.txt`）。默认 **不**把完整 GPL 树 vendor 进产品路径。
-- **不做**：不声称 FPGA bitstream、不把 GPL RTL/固件当作专有代码、不把 LMCache/SGLang 当作控制器。
+- **本仓**：自有 Apache-2.0 — C 行为孪生 + SystemVerilog HW-sim + **FPGA MMIO 外壳**（AXI-Lite / 板级 TG）。
+- **Cosmos+**：外部 GPL 学习基线；**不** vendor 进产品路径。
+- **诚实边界**：云端无 Vivado/板卡时 **不**声称已生成 bitstream。
 
 ```bash
-make smoke    # C 冒烟: smoke_io_desc: PASS
-make proto    # C 原型演示 + 短报告
-make hw-sim   # 硬件仿真（亦可用 make sim-hw）→ hw_sim: PASS
+make smoke       # C 冒烟
+make proto       # C 原型演示
+make hw-sim      # Verilator/Icarus 硬件仿真 → hw_sim: PASS
+make fpga-lint   # Verilator lint-only（+ 可选 Yosys）→ fpga_lint: PASS
+make fpga-vivado # 有 Vivado 才跑；否则优雅退出码 2
 ```
 
-### 硬件仿真依赖
+### 依赖
 
 ```bash
-# Debian/Ubuntu
-sudo apt-get update && sudo apt-get install -y verilator iverilog
-
-# macOS
-brew install verilator icarus-verilog
+sudo apt-get update
+sudo apt-get install -y verilator iverilog yosys   # sim + lint
+# Vivado：仅用户本机；见 docs/fpga-portability.md
 ```
-
-详见 [`docs/hw-sim-prototype.md`](docs/hw-sim-prototype.md)。波形：`build/hw_sim/aissd_hw_sim.vcd`。
 
 | 路径 | 说明 |
 |------|------|
-| `include/` · `src/stubs/` · `src/proto/` | C 行为孪生 |
-| `rtl/` | Clean-room SV：队列 / FDP / L2P / NAND 时序模型 / top |
-| `tb/tb_aissd_hw_sim.sv` | 自检 TB + VCD |
-| `scripts/run_hw_sim.sh` | Verilator→Icarus 启动脚本 |
-| `tests/` | C smoke / proto demo |
-| `docs/prototype-design.md` | C 原型架构 |
-| `docs/hw-sim-prototype.md` | **硬件仿真**架构与 runbook |
-| `third_party/cosmos-plus-openssd/` | 上游克隆说明（不 vendor 全树） |
+| `rtl/` | 控制路径 SV（仿真与综合共用） |
+| `rtl/fpga/` | 复位同步、AXI-Lite、板级 top / board |
+| `tb/` | **仅仿真** |
+| `constraints/` | Arty A7 示例 XDC + 通用模板 |
+| `docs/fpga-portability.md` | **FPGA 可烧录评估与分期策略** |
+| `docs/hw-sim-prototype.md` | 硬件仿真 runbook |
 
 ## English brief
 
-AISSD provides a **behavioral C twin** (`make proto`) and a **hardware-sim path** (`make hw-sim`) over clean-room SystemVerilog: host SQ → FDP placement → L2P/GC hooks → cycle-approx NAND → completions, with a self-checking TB and VCD. Cosmos+ remains an external GPL study baseline only.
+Behavioral twin (`make proto`), cycle HW-sim (`make hw-sim`), and an **FPGA Stage-A/B shell** (`rtl/fpga`, `make fpga-lint`). Prefer Artix-7 (Arty A7) with AXI-Lite or on-chip TG before real PCIe/NAND. No bitstream is claimed without a successful local Vivado run.
 
-```text
-C:   AI traffic → proto_ctrl → io_desc → qos/FTL → nand_model
-HW:  Host BFM  → aissd_ctrl_top (SV) → timed NAND model → CQ + VCD
-```
-
-License: Apache-2.0 for first-party code — see `LICENSE` and `NOTICE`.
+License: Apache-2.0 — see `LICENSE` / `NOTICE`.
