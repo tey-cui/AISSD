@@ -54,7 +54,8 @@ make proto
 # → short report + proto_demo: PASS
 ```
 
-原型架构、范围与数据路径见 [`docs/prototype-design.md`](./prototype-design.md)。
+原型架构、范围与数据路径见 [`docs/prototype-design.md`](./prototype-design.md)。  
+硬件仿真（Verilator/Icarus）见 [`docs/hw-sim-prototype.md`](./hw-sim-prototype.md)：`make hw-sim`。
 
 不声称 Vivado 综合或真实 NVMe 枚举。
 
