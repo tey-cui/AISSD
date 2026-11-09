@@ -50,7 +50,11 @@ AISSD/
 ```bash
 make smoke
 # → smoke_io_desc: PASS
+make proto
+# → short report + proto_demo: PASS
 ```
+
+原型架构、范围与数据路径见 [`docs/prototype-design.md`](./prototype-design.md)。
 
 不声称 Vivado 综合或真实 NVMe 枚举。
 
