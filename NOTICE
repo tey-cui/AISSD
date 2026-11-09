@@ -1,0 +1,33 @@
+AISSD — AI-oriented SSD controller prototype (clean-room adaptation)
+Copyright 2026 AISSD contributors
+
+This repository's first-party source under include/, src/, tests/, docs/,
+and scripts/ is licensed under the Apache License, Version 2.0.
+See the LICENSE file for the full text.
+
+----------------------------------------------------------------------------
+STUDY BASELINE (NOT VENDORED HERE)
+----------------------------------------------------------------------------
+
+Cosmos+ OpenSSD is an external study baseline only. It is NOT copied into
+the main product paths of this repository.
+
+  Upstream: https://github.com/Cosmos-OpenSSD/Cosmos-plus-OpenSSD
+  Pinned:   78601486bb5581e40628ec7e841dea8e97eff034
+  SPDX:     GPL-3.0 (repository LICENSE); firmware headers GPLv3-or-later;
+            some NVMe RTL file headers carry BSD-style redistribution terms
+            (mixed-license signals — legal review before any reuse).
+
+Clone / pin instructions: third_party/cosmos-plus-openssd/README.md
+License notice stub:      third_party/cosmos-plus-openssd/LICENSE.NOTICE
+
+Do NOT treat GPL Cosmos+ RTL or GreedyFTL firmware as proprietary AISSD
+code. Commercial / closed-source paths must clean-room rewrite; laboratory
+GPL forks must stay isolated and fulfill GPL obligations.
+
+----------------------------------------------------------------------------
+OPTIONAL WORKLOAD REFERENCES (NOT CONTROLLER CODE)
+----------------------------------------------------------------------------
+
+LMCache and SGLang are referenced only as AI workload I/O drivers for later
+profiling. See docs/workload-notes.md. They are not part of the controller.

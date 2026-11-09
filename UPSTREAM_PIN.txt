@@ -1,0 +1,6 @@
+Cosmos+ OpenSSD (study baseline; not vendored in-tree by default)
+URL:    https://github.com/Cosmos-OpenSSD/Cosmos-plus-OpenSSD
+COMMIT: 78601486bb5581e40628ec7e841dea8e97eff034
+SPDX:   GPL-3.0 (see third_party/cosmos-plus-openssd/LICENSE.NOTICE)
+DOCS:   third_party/cosmos-plus-openssd/README.md
+        docs/UPSTREAM_BASELINE.md

@@ -1,0 +1,11 @@
+build/
+*.o
+*.a
+*.so
+*.out
+.DS_Store
+*.swp
+*~
+# If someone adds a local Cosmos+ checkout under third_party, keep it untracked
+# unless using an explicit submodule path named "tree".
+third_party/cosmos-plus-openssd/tree/

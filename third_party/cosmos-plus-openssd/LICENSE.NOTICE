@@ -1,0 +1,21 @@
+NOTICE — Cosmos+ OpenSSD (external baseline; not shipped as AISSD product code)
+
+Upstream project: Cosmos+ OpenSSD (Hanyang ENC Lab / OpenSSD Project)
+URL:             https://github.com/Cosmos-OpenSSD/Cosmos-plus-OpenSSD
+Pinned commit:   78601486bb5581e40628ec7e841dea8e97eff034
+
+License facts (verify against upstream tree; legal has final say):
+
+1. Repository root LICENSE is GPL-3.0.
+2. Firmware sources such as GreedyFTL NVMe files carry GPLv3-or-later headers.
+3. Some NVMe RTL files carry BSD-style redistribution headers, coexisting with
+   the repository SPDX — treat as mixed-license signals requiring audit before
+   any reuse outside a GPL-compliant laboratory environment.
+
+AISSD policy:
+
+- First-party AISSD code (Apache-2.0) is a clean-room adaptation: interfaces,
+  stubs, and simulation models authored independently.
+- Do not copy Cosmos+ RTL or firmware into AISSD main product paths.
+- If a laboratory GPL fork is maintained, keep it isolated, retain notices, and
+  fulfill GPL obligations; do not relicense Cosmos+ as Apache-2.0.
