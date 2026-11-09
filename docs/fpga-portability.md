@@ -1,6 +1,6 @@
 # AISSD FPGA 可烧录路径评估与脚手架
 
-> 关联：[`hw-sim-prototype.md`](./hw-sim-prototype.md) · Project `fpga-burnable-path.md`  
+> 关联：[`hw-sim-prototype.md`](./hw-sim-prototype.md) · Project 文档 `fpga-burnable-path.md` · **分期上板与购板清单**：Project `fpga-prototype-next-steps.md`（Cursor Project「SSD」文档区；含可买 SKU）  
 > 诚实前提：**本云环境无 Vivado/Quartus 许可证、无物理 FPGA 板** → **不能**在此产出真实 bitstream。  
 > 本 PR 交付：可综合外壳 + 约束模板 + 本地 TCL/yosys 检查，为日后上板做准备。
 
@@ -28,10 +28,13 @@
 
 | 选项 | 适用 | 诚实约束 |
 |------|------|----------|
-| **通用 Artix-7 评估板**（如 Digilent Arty A7-35T/100T） | **推荐 Gen-1 烧录练习** | 便宜、文档全；无板载 OpenSSD NAND 子卡；用 AXI-Lite+BRAM 模型 |
-| **Kintex/Ultrascale+ 评估**（KCU105 等） | 更大 BRAM/PCIe 余量 | 成本高；本仓约束仅为模板 |
+| **Digilent Arty A7-100T**（XC7A100T；**A7-35T 已停产**） | **推荐 Gen-1 购板与烧录练习** | 与 `constraints/arty_a7_100t.xdc` 对齐；无板载 OpenSSD NAND；AXI-Lite / 片上 TG |
+| **Nexys Video**（XC7A200T）等更大 Artix | 逻辑/BRAM 余量 | 仍无真 NAND；适合 Stage B 复杂外壳 |
+| **Kintex Ultrascale 评估**（KCU105 等） | PCIe 互连练习 | 成本高；无 OpenSSD NAND 子卡 |
 | **Cosmos+ OpenSSD 兼容板** | 日后真实 NAND/NVMe | 需板卡+Vivado；固件/对照 GPL 隔离；**不**把上游 RTL 拷进 AISSD |
-| **DaisyPlus / CRZ** | 现代 OpenSSD 平台 | 许可需邮件澄清后再作主路径 |
+| **DaisyPlus / CRZ** | 现代 OpenSSD 平台 | 价高；许可需邮件澄清后再作主路径 |
+
+完整购板表、实验室清单与决策树见 Project 文档 **`fpga-prototype-next-steps.md`**。
 
 **云端**：无许可证、无板 → 只跑 `make hw-sim` / `make fpga-lint`（yosys/verilator）；bitstream 留给用户本地 Vivado。
 
@@ -114,4 +117,4 @@ sudo apt-get install -y yosys verilator   # lint
 
 ## English summary
 
-Current controller SV is **synth-oriented**; the TB is sim-only. This PR adds an **AXI-Lite MMIO FPGA shell**, XDC templates, and Vivado/yosys scripts. Prefer **generic Artix-7** for Stage-A bring-up; Cosmos+/DaisyPlus later for real NAND/NVMe. **No bitstream** is produced in-cloud without Vivado/board.
+Current controller SV is **synth-oriented**; the TB is sim-only. This PR adds an **AXI-Lite MMIO FPGA shell**, XDC templates, and Vivado/yosys scripts. Prefer **Arty A7-100T** (35T retired) for Stage-A bring-up; Cosmos+/DaisyPlus later for real NAND/NVMe. **No bitstream** is produced in-cloud without Vivado/board. Purchase / lab next steps live in Project doc `fpga-prototype-next-steps.md`.
